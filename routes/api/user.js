@@ -6,6 +6,10 @@ const gravatar = require('gravatar');
 router.get('/test', (req, res) => {
   res.json({ msg: "login works" });
 });
+/**
+ * $route POST api/users/register
+ * $parameters name:String, email:String, password:String
+ */
 router.post('/register', (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
@@ -27,5 +31,16 @@ router.post('/register', (req, res) => {
       throw err;
     });
   }).catch(err => { throw err });
+});
+
+/**
+ * $route POST api/users/login
+ * $parameters email:String, password:String
+ */
+router.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  // 查询数据库
+
 });
 module.exports = router;
