@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const encrypt = require('../../utils/utils').encrypt; //加密方法
 const User = require('../../models/User');
+const gravatar = require('gravatar');
 router.get('/test', (req, res) => {
   res.json({ msg: "login works" });
 });
@@ -10,7 +11,9 @@ router.post('/register', (req, res) => {
     if (user) {
       return res.status(200).json({ code: 0, message: 'The email address has been registered!' });
     }
+    const avatar = gravatar.url(req.body.email, { s: '200', r: 'pg', d: 'mp' })
     const newUser = new User({
+      avatar,
       name: req.body.name,
       email: req.body.email,
       password: req.body.password
