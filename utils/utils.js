@@ -9,6 +9,16 @@ const encrypt = (password) => {
     });
   });
 }
+
+const decrypt = (password, hash) => {
+  return new Promise((res, rej) => {
+    bcrypt.compare(password, hash, function (err, result) {
+      if (err) { rej(err); }
+      res(result);
+    });
+  });
+}
 module.exports = {
-  encrypt
+  encrypt,
+  decrypt
 }

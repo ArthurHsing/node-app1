@@ -1,8 +1,12 @@
 const express = require('express');
-const router = express.Router();
-const encrypt = require('../../utils/utils').encrypt; //加密方法
-const User = require('../../models/User');
 const gravatar = require('gravatar');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+const User = require('../../models/User');
+const utils = require('../../utils/utils');
+const SECRETKEY = require('../../config/keys').SECRETKEY;
+const encrypt = utils.encrypt; //加密方法
+const decrypt = utils.decrypt; //解密方法
 router.get('/test', (req, res) => {
   res.json({ msg: "login works" });
 });
@@ -26,10 +30,8 @@ router.post('/register', (req, res) => {
       newUser.password = encryptedPassword;
       return newUser.save();
     }).then(user => {
-      res.status(200).json({ code: 1, message: 'Register successfully!', user });
-    }).catch(err => {
-      throw err;
-    });
+      res.status(200).json({ code: 1, message: 'Register successfully!', data: { user } });
+    }).catch(err => { throw err; });
   }).catch(err => { throw err });
 });
 
@@ -41,6 +43,24 @@ router.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   // 查询数据库
-
+  User.findOne({ email }).then(user => {
+    if (!user) { return res.status(200).json({ code: 0, message: 'The user does not exist!' }); }
+    // 密码匹配
+    decrypt(password, user.password).then(isMatch => {
+      if (isMatch) {
+        const data = {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar
+        };
+        const token = jwt.sign(data, SECRETKEY, { expiresIn: 3600 });
+        res.status(200).json({
+          code: 1, message: 'Login successfully!', data: { token: `Bearer ${token}` }
+        });
+      } else {
+        res.status(200).json({ code: 0, message: 'Wrong password!' });
+      }
+    }).catch(err => { throw err; });
+  });
 });
 module.exports = router;
