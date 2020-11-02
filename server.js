@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const db = require('./config/keys').mongoURI; //mongodb的uri
 const users = require('./routes/api/user');
 const app = express();
@@ -18,6 +19,8 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true }).then(r
  */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+require('./config/passport')(passport);
 app.use('/api/users', users);
 app.get('/', function (req, res) {
   res.send('Hello, world!');

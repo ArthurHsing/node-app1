@@ -14,7 +14,11 @@ const UserSchema = new Schema({
     required: true
   },
   avatar: {
+    type: String
+  },
+  identity: {
     type: String,
+    required: true
   },
   date: {
     type: Date,
