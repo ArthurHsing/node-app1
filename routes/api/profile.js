@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const Profile = require('../../models/Profile');
+const { route } = require('./user');
 
 router.get('/test', (req, res) => {
   res.json({ msg: "profile works" });
@@ -58,6 +59,30 @@ router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) 
       throw err;
     });
 });
+
+/**
+ * $route GET api/profiles/edit/:id
+ * $parameters 获取所有的profiles
+ * $desc get profiles
+ */
+router.post('/edit/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    const profileFields = {};
+    const requestBody = req.body;
+    for (let i in requestBody) {
+      profileFields[i] = requestBody[i];
+    }
+    Profile
+      .findOneAndUpdate({ _id: req.params.id }, profileFields)
+      .then(file => {
+        res.status(200).json({
+          code: 1,
+          message: 'Modify successfully!',
+          data: profileFields
+        });
+      });
+  });
 
 /**
  * $route GET api/profiles/delete/:id
