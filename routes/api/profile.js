@@ -8,7 +8,7 @@ router.get('/test', (req, res) => {
 });
 /**
  * $route POST api/profiles/add
- * $parameters 
+ * $parameters 查看Profile.js文件
  * $desc add profile
  */
 router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -29,4 +29,52 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
       throw err;
     });
 });
+/**
+ * $route GET api/profiles
+ * $parameters 获取所有的profiles
+ * $desc get profiles
+ */
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.find({})
+    .then(profiles => {
+      res.status(200).json({ code: 1, message: 'success', data: profiles });
+    })
+    .catch(err => {
+      throw err;
+    });
+});
+
+/**
+ * $route GET api/profiles/:id
+ * $parameters 获取所有的profiles
+ * $desc get profiles
+ */
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOne({ _id: req.params.id })
+    .then(profiles => {
+      res.status(200).json({ code: 1, message: 'success', data: profiles });
+    })
+    .catch(err => {
+      throw err;
+    });
+});
+
+/**
+ * $route GET api/profiles/delete/:id
+ * $parameters 获取所有的profiles
+ * $desc get profiles
+ */
+router.delete('/delete/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    // console.log(req.params.id);
+    Profile.findOneAndRemove({ _id: req.params.id })
+      .then(profileDoc => {
+        if (!profileDoc) { return res.status(200).json({ code: 0, message: 'Profile dose not exist!' }) }
+        res.status(200).json({ code: 1, message: 'Successfully delete!', data: profileDoc });
+        console.log(profileDoc);
+      }).catch(err => {
+        throw err;
+      })
+  });
 module.exports = router;

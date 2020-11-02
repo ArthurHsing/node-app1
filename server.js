@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 /**
  * 测试接口
  */
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true }).then(res => {
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).then(res => {
   console.log('Mongodb connected!');
 }).catch(err => {
   console.log(err);
