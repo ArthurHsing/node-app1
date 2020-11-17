@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "set port=8008 && nodemon server.js"
   },
   "author": "Arthur",
   "license": "ISC",
