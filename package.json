@@ -4,8 +4,11 @@
   "description": "restful api",
   "main": "server.js",
   "scripts": {
+    "client-install": "cnpm install --prefix client",
+    "client": "npm start --prefix client",
     "start": "node server.js",
-    "server": "set port=8008 && nodemon server.js"
+    "server": "set port=5001 && nodemon server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Arthur",
   "license": "ISC",
@@ -19,5 +22,8 @@
     "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0"
   }
 }
